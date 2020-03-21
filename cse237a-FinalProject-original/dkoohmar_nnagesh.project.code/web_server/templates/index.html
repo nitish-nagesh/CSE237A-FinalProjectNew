@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>SAAGE</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></link>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/loader.js') }}"></script>
+    </head>
+    <body>
+        <div id="topbar">
+            <div id="logo"><img src="{{ url_for('static', filename='img/saage.png') }}"></img></div>
+            <div id="name"><a href="/">Sensing and Actuating in Agriculture and Gardening Environments</a></div>
+        </div>
+        <div class="content">
+        <form action="/prediction" method="post">
+            <label for="sensor_prediction">Get sensor data prediction:</label>
+            <select id="sensor_prediction" name="sensor_prediction">
+                {% for data_type in prediction_types %}
+                <option value="{{data_type}}">{{data_type}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="button">
+        </form>
+        {% for data_type in sensor_data %}
+        <div class="sensor_section">
+            {% if predicted == 'True' %}
+            <h4>Predicted chart for {{data_type}}:</h4>
+            {% else %}
+            <div class="data_type_header" id="{{data_type}}_header">Toggle displaying {{data_type}} chart data</div>
+            {% endif %}
+            <div id="chart_{{data_type}}_div" class="chart"></div>
+        </div>
+        {% endfor %}
+        </div>
+        <div id="loader"></div>
+        <div id="page-loading"></div>
+    </body>
+    <script type="text/javascript">
+    {% if sensor_data %}
+        // convert the column names for units for chart Y axis labels
+        units = {'timestamp' : 'Time', 'motion_count' : 'Motion Events Counted', 'soil_moisture' : 'Moisture Level',
+                            'ground_temp' : 'Fahrenheit', 'air_temp': 'Fahrenheit', 'humidity' : 'Percentage',
+                            'air_pressure' : 'hPa', 'uv_index': 'UV Index','waterproof_temp':'Fahrenheit'};
+
+        //https://developers.google.com/chart/interactive/docs/gallery/linechart
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', {'packages':['corechart']});
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawCharts);
+        color_options = ['#e2431e', '#e7711b', '#f1ca3a', '#6f9654','#1c91c0','#43459d'];
+        current_color = 0;
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawCharts() {
+        {% for data_type, data_values in sensor_data.items() %}
+            var {{data_type}}_data = new google.visualization.DataTable();
+            {{data_type}}_data.addColumn('string', 'Timestamp');
+            {{data_type}}_data.addColumn('number', '{{data_type}}');
+            {{data_type}}_data.addRows([
+                    {% for timestamp, value in data_values %}
+                        ["{{timestamp}}", {{value}}],
+                    {% endfor %}
+                ]);
+
+            var {{data_type}}_options = {
+            hAxis: {
+              title: {% if predicted %}'Predicted Minutes in Future'{% else %}'Timestamp'{% endif %}
+            },
+            vAxis: {
+              title: units['{{data_type}}']
+            },
+            colors : [color_options[current_color]]
+            };
+
+            current_color = (current_color + 1) % color_options.length;
+
+            var {{data_type}}_chart = new google.visualization.LineChart(document.getElementById('chart_{{data_type}}_div'));
+            {{data_type}}_chart.draw({{data_type}}_data, {{data_type}}_options);
+
+            var chart_{{data_type}}_div = document.getElementById('chart_{{data_type}}_div')
+            {% if predicted == ''%}
+            chart_{{data_type}}_div.style.display = "none";
+            // toggle displaying chart if header is clicked
+            document.getElementById('{{data_type}}_header').onclick = function() {
+                if(chart_{{data_type}}_div.style.display == "none")
+                {
+                    chart_{{data_type}}_div.style.display = "block";
+                }
+                else
+                {
+                    chart_{{data_type}}_div.style.display = "none";
+                }
+            };
+            {% endif %}    
+
+    {% endfor %}
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("page-loading").style.display = "none"; 
+    }
+    {% else %}
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("page-loading").style.display = "none"; 
+    {% endif %}
+    </script>
+</html>

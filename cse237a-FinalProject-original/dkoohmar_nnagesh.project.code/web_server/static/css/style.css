@@ -1,0 +1,132 @@
+/*https://www.w3schools.com/howto/howto_css_loader.asp*/
+#loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #28B463; /* green */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  position: fixed;
+  top: 45%;
+  left: 45%;
+  z-index: 2;
+}
+
+#page-loading {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background: black;
+  opacity: 0.5;
+  cursor: wait;
+  z-index: 1;
+}
+
+#topbar {
+    background-color: #28B463;
+    padding-bottom: 15px;
+    box-shadow: #28B463 0px 10px 10px -10px;
+    position: fixed;
+    width: 100%;
+    text-align:center;
+    z-index: 3;
+}
+
+#logo {
+    height: 60px;
+}
+
+#logo img {
+    height: inherit;
+}
+
+#name {
+    padding-left:25px;
+    color: white;
+    background-color: #28B463;
+    font-size: 30px;
+    font-family: arial;
+}
+
+.data_type_header {
+    background-color: #634008;
+    color:white;
+    padding: 15px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    border-radius 5px;
+}
+
+.data_type_header:hover {
+    box-shadow: black 0px 5px 15px 0px;
+}
+
+.content {
+    padding-top:150px;
+    width: 1000px;
+    text-align:center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart {
+    height: 500px;
+}
+
+.button {
+    border: 0px;
+    background-color: #634008;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    box-shadow: black 0px 5px 15px 0px;
+}
+
+body {
+    font-family: arial;
+}
+
+/*https://www.w3schools.com/Css/tryit.asp?filename=trycss_table_fancy*/
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table thead {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #28B463;
+  color: white;
+}
+
+a {
+    color: white !important;
+    text-decoration: none;
+}
+
+h4 {
+    margin-bottom: 0px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
